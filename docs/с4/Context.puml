@@ -1,0 +1,25 @@
+@startuml
+title Диаграмма контекста системы управления отоплением
+
+top to bottom direction
+
+!include c4_templates/C4_Component.puml
+
+Person(user, "Пользователь", "Владелец дома")
+Person(admin, "Мастер", "Устанавливает и нстраивает систему")
+System(MainHeatSystem, "Система управления отоплением", "Управляет датчиками температуры и отопления")
+
+System(HeatSensor, "Датчик температуры", "Измеряет температуру в доме")
+System(HeatSystemSensor, "Система отопления", "Умная система отопления")
+
+Rel(user, MainHeatSystem, "Установить температуру")
+Rel(user, MainHeatSystem, "Просмотреть температуру")
+Rel(admin, MainHeatSystem, "Настроить систему")
+Rel(admin, HeatSensor, "Подключить датчик измерения температуры")
+Rel(admin, HeatSystemSensor, "Подключить систему отопления")
+Rel(MainHeatSystem,HeatSensor,"Проверить температуру")
+Rel(MainHeatSystem,user,"Вернуть данные температуры")
+Rel(HeatSensor, MainHeatSystem,"Вернуть данные температуры")
+Rel(MainHeatSystem,HeatSystemSensor,"Установить температуру")
+
+@enduml

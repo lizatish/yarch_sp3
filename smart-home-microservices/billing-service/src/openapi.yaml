@@ -1,0 +1,114 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/payment:
+    post:
+      tags:
+      - payment-controller
+      summary: Оплата подключения
+      description: Произвести оплату подключения устройства
+      operationId: payment
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/PaymentRequest"
+        required: true
+      responses:
+        "200":
+          description: Платеж совершен
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "400":
+          description: Платеж не был совершен по какой-либо причине
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+  /api/v1/payment/{paymentId}:
+    get:
+      tags:
+      - payment-controller
+      summary: Проверка статуса платежа
+      description: Получить статус Платежа
+      operationId: getPayment
+      parameters:
+      - name: paymentId
+        in: path
+        description: Уникальный номер платежа
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+      responses:
+        "200":
+          description: Платеж найден
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+        "404":
+          description: Платежа с таким paymentId не существует
+components:
+  schemas:
+    PaymentRequest:
+      type: object
+      properties:
+        token:
+          type: string
+          description: Токен для доступа к api
+            analiticexpertpay@gmail.com
+        payeeINN:
+          type: string
+          description: ИНН юр.лица или ИП
+          example: "7743013902"
+        name:
+          type: string
+          description: Наименование юр.лица или ИП
+          example: ООО Лиза
+        bic:
+          type: string
+          description: БИК банка
+          example: "044511974"
+        personalAcc:
+          type: string
+          description: Расчётный счёт
+          example: "40817810099910004312"
+        lastName:
+          type: string
+          description: ФИО плательщика
+          example: Лизина Елизавета Елизовна
+        purpose:
+          type: string
+          description: Назначение
+          example: Оплата услуг умных датчиков
+        sum:
+          type: integer
+          description: Сумма рублей
+          format: int32
+          example: 1000
+        sumKop:
+          type: integer
+          description: Сумма копеек
+          format: int32
+          example: 0
+    PaymentResponse:
+      type: object
+      properties:
+        paymentId:
+          type: string
+          description: Уникальный номер платежа
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        status:
+          type: string
+          description: Статус платежа
+          example: Done

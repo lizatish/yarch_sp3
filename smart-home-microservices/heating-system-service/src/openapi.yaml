@@ -1,0 +1,136 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/smart-heating-system/{id}:
+    get:
+      tags:
+      - smart-heating-system-controller
+      summary: Получить данные об устройстве
+      description: Получить данные об устройстве системы отопления
+      operationId: getHeatingSystem
+      parameters:
+      - name: id
+        in: path
+        description: Уникальный номер устройства
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+      responses:
+        "200":
+          description: Данные об устройстве получены
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HeatingSystemResponse"
+        "404":
+          description: Устройства с таким id не существует
+    put:
+      tags:
+      - smart-heating-system-controller
+      summary: Изменить температуру в системе отопления
+      description: Задать новую температуру на устройстве системы отопления
+      operationId: updateHeatingSystem
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный номер устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeatingSystemUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Температура изменена
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HeatingSystemResponse"
+        "404":
+          description: Устройства с таким id не существует
+  /api/v1/smart-heating-system:
+    post:
+      tags:
+      - smart-heating-system-controller
+      summary: Зарегистрировать устройство
+      description: Зарегистрировать устройство
+      operationId: createHeatingSystem
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/HeatingSystemRequest"
+        required: true
+      responses:
+        "200":
+          description: Устройство зарегистрировано
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/HeatingSystemResponse"
+        "409":
+          description: Устройство было зарегистрировано ранее
+components:
+  schemas:
+    HeatingSystemUpdateRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        deviceId:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        temperature:
+          type: number
+          description: Новая температура
+          format: double
+          example: 23.1
+    HeatingSystemResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        currentTemperature:
+          type: number
+          description: Текущая температура
+          format: double
+          example: 23.1
+        lastUpdated:
+          type: string
+          description: Последнее обновление
+          format: date-time
+          example: 2024-01-01T14:20:00Z
+    HeatingSystemRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        deviceId:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae

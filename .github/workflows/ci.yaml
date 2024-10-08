@@ -20,7 +20,7 @@ jobs:
         name: Login to Docker Hub
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
+          registry: ghcr.io/lizatish
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       -
@@ -30,6 +30,6 @@ jobs:
           platforms: linux/amd64,linux/arm64
           context: smart-home-monolith
           push: true
-          tags: ghcr.io/yandex-practicum/architecture-sprint-3:latest
+          tags: ghcr.io/lizatish/yarch_sp3:latest
           cache-from: type=gha
           cache-to: type=gha,mode=max
