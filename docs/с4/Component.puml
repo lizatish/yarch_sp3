@@ -1,0 +1,22 @@
+@startuml
+title Диаграмма компонентов сервиса работы с датчиками измерения температуры
+
+top to bottom direction
+
+!include c4_templates/C4_Component.puml
+
+Container_Boundary(FitLifeSystem, "Сервис работы с датчиками измрения температуры") {
+  Container(WebApp, "Веб-приложение", "Java, Spring", "Принимает инструкции от главного сервиса системы")
+  Container(Database, "База данных", "PostgreSQL", "Хранит данные о подключенных датчиках и их настройках")
+}
+
+Container(WebApp, "Веб-приложение", "Java, Spring") {
+  Component(HeatSensorController, "Контроллер датчиков измерения температуры", "Обрабатывает принимаемые данные")
+  Component(ServiceLayer, "Сервисный слой", "Слой бизнес-логики")
+  Component(RepositoryLayer, "Слой репозитория", "Слой взаимодействия с базой данных")
+}
+
+Rel(HeatSensorController,ServiceLayer,"Вызывает бизнес-логику по датчикам")
+Rel(ServiceLayer,RepositoryLayer,"Записывает данные о датчиках в БД")
+Rel(RepositoryLayer,Database,"Записывает данные о датчиках в БД")
+@enduml

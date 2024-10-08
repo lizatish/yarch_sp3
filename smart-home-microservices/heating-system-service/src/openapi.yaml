@@ -1,0 +1,32 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/smart-heating-system/{id}:
+    get:
+      tags:
+      - smart-heating-system-controller
+      operationId: get
+      responses:
+        "200":
+          description: OK
+    put:
+      tags:
+      - smart-heating-system-controller
+      operationId: update
+      responses:
+        "200":
+          description: OK
+  /api/v1/smart-heating-system:
+    post:
+      tags:
+      - smart-heating-system-controller
+      operationId: create
+      responses:
+        "200":
+          description: OK
+components: {}

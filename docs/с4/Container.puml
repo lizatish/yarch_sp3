@@ -1,0 +1,60 @@
+@startuml
+title Диаграмма контейнеров системы удаленного управления умными устройствами
+
+top to bottom direction
+
+!include c4_templates/C4_Component.puml
+
+System(HomeSystem, "Дом пользователя", "")
+System(HeatSystem, "Система удаленного управления умными устройствами", "Управляет умными устройствами")
+
+Container_Ext(AuthSystem, "Система авторизации пользователей") {
+ Container(Keyсloak, "Сервис авторизации", "Keycloack", "Занимается авторизацией пользователей")
+}
+Container_Boundary(HomeSystem, "Система удаленного управления умными устройствами") {
+  Person(user, "Пользователь", "Владелец дома")
+  Container(HeatSensorDevice, "Датчик температуры", "Физическое устройство", "Измеряет температуру в доме")
+  Container(HeatSystemDevice, "Система отопления", "Физическое устройство", "Позволяет изменять отопление дома")
+}
+Container_Boundary(HeatSystem, "Система удаленного управления умными устройствами") {
+  Container(ApiGateway, "API-шлюз", "Nginx", "Принимает запросы пользователя и перенаправляет их на микросервисы")
+
+  Container(HeatSensorService, "Сервис работы с датчиками измерения температуры", "Java, Spring", "Работает с датчиками температуры")
+  Container(HeatSystemService, "Сервис работы с отопительными системами", "Java, Spring", "Работает с отопительными системами")
+  Container(BillingService, "Сервис биллинга", "Java, Spring", "Проводит платежи")
+  Container(NotificationService, "Сервис нотификации", "Java, Spring", "Уведомляет о событиях пользователя")
+
+  Container(HeatSystemServiceDB, "База данных для работы с отопительными системами", "Postgres", "Хранит данные об отопительных системах пользователей")
+  Container(HeatSensorServiceDB, "База данных для работы с датчиками измерения температуры", "Postgres", "Хранит данные о температурных датчиках пользователей")
+  Container(BillingServiceDB, "База данных для работы с оплатой", "Postgres", "Хранит данные об оплатах пользователей")
+  Container(NotificationServiceDB, "БД сервиса нотификации", "Postgres", "Хранит данные о событиях пользователя")
+}
+
+
+Rel(user, ApiGateway, "Зарегистрировать новое устройство")
+Rel(user, ApiGateway, "Задать команду существующему устройству")
+
+Rel(ApiGateway, Keyсloak, "Проверить авторизацию пользователя")
+Rel(ApiGateway, BillingService, "Провести оплату пользователя")
+Rel(ApiGateway, HeatSensorService, "Измерить температуру на устройстве")
+Rel(ApiGateway, HeatSensorService, "Зарегистрировать новое устройство измерения температуры")
+Rel(HeatSensorService, HeatSensorServiceDB, "Записать данные о температуре")
+Rel(BillingService, NotificationService, "Уведомить пользователя о проведении оплаты")
+Rel(HeatSensorService, NotificationService, "Уведомить пользователя об изменении температуры")
+Rel(Keyсloak, NotificationService, "Уведомить пользователя о регистрации")
+Rel(HeatSystemService, NotificationService, "Уведомить пользователя об установлении новой температуры")
+Rel(NotificationService, user, "Уведомить пользователя")
+Rel(HeatSensorService, Keyсloak, "Проверить авторизацию пользователя")
+Rel(HeatSensorService, Keyсloak, "Проверить авторизацию пользователя")
+Rel(BillingService, Keyсloak, "Проверить авторизацию пользователя")
+
+Rel(ApiGateway, HeatSystemService, "Задать новую текущую температуру")
+Rel(ApiGateway, HeatSystemService, "Зарегистрировать новое умное устройство отопления")
+Rel(HeatSystemDevice, ApiGateway, "Узнать указания системы")
+Rel(HeatSensorDevice, ApiGateway, "Узнать указания системы")
+Rel(HeatSystemService, HeatSystemServiceDB, "Записать данные об отопительном приборе")
+Rel(BillingService, BillingServiceDB, "Записать данные об оплате")
+Rel(NotificationService, NotificationServiceDB, "Записать данные о нотификациях")
+
+
+@enduml
