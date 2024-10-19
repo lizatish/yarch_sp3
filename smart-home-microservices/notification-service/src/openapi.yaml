@@ -1,0 +1,52 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/notification:
+    post:
+      tags:
+      - notification-controller
+      summary: Отправить уведомление
+      description: Отправить уведомление
+      operationId: createNotification
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateNotificationRequest"
+        required: true
+      responses:
+        "200":
+          description: Уведомление отправлено
+        "400":
+          description: Ошибка отправки уведомления
+components:
+  schemas:
+    CreateNotificationRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        email:
+          type: string
+          description: Почта пользователя
+          example: liza@liza.com
+        type:
+          type: string
+          description: Тип уведомления
+          example: SETUP_DEVICE
+          enum:
+          - USER_REGISTRATION
+          - BROKEN_DEVICE
+          - SETUP_DEVICE
+        message:
+          type: string
+          description: Уведомление
+          example: Устройство зарегистрировано

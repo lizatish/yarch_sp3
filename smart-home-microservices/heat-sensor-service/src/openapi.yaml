@@ -1,0 +1,136 @@
+openapi: 3.0.1
+info:
+  title: OpenAPI definition
+  version: v0
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /api/v1/heating-sensor:
+    post:
+      tags:
+      - temperature-sensor-controller
+      summary: Зарегистрировать устройство
+      description: Зарегистрировать устройство
+      operationId: create
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemperatureSensorRequest"
+        required: true
+      responses:
+        "200":
+          description: Устройство зарегистрировано
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TemperatureSensorResponse"
+        "409":
+          description: Устройство было зарегистрировано ранее
+  /api/v1/heating-sensor/{id}:
+    get:
+      tags:
+      - temperature-sensor-controller
+      summary: Получить данные устройства
+      description: Получить данные об устройстве датчика температуры
+      operationId: getTemperatureSensor
+      parameters:
+      - name: id
+        in: path
+        description: Уникальный номер устройства
+        required: true
+        schema:
+          type: string
+          format: uuid
+        example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+      responses:
+        "200":
+          description: Данные об устройстве получены
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TemperatureSensorResponse"
+        "404":
+          description: Устройства с таким id не существует
+    put:
+      tags:
+        - temperature-sensor-controller
+      summary: Сохранить в систему информацию о текущей температуре
+      description: Сохранить в систему информацию о текущей температуре
+      operationId: updateHeatingSensorTemperature
+      parameters:
+        - name: id
+          in: path
+          description: Уникальный номер устройства
+          required: true
+          schema:
+            type: string
+            format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TemperatureSensorUpdateRequest"
+        required: true
+      responses:
+        "200":
+          description: Температура изменена
+          content:
+            '*/*':
+              schema:
+                $ref: "#/components/schemas/TemperatureSensorResponse"
+        "404":
+          description: Устройства с таким id не существует
+components:
+  schemas:
+    TemperatureSensorUpdateRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        deviceId:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        temperature:
+          type: number
+          description: Измеренная температура
+          format: double
+          example: 23.1
+    TemperatureSensorRequest:
+      type: object
+      properties:
+        userId:
+          type: string
+          description: Идентификатор пользователя
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        deviceId:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+    TemperatureSensorResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: Идентификатор устройства
+          format: uuid
+          example: bd4840ff-7daf-4b3b-9f63-f292dd7878ae
+        currentTemperature:
+          type: number
+          description: Текущая температура
+          format: double
+          example: 23.1
+        lastUpdated:
+          type: string
+          description: Последнее обновление
+          format: date-time
+          example: 2024-01-01T14:20:00Z
